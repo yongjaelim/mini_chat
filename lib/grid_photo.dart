@@ -21,6 +21,8 @@ class GridPhoto extends StatefulWidget {
 
 class _GridPhotoState extends State<GridPhoto> {
   final picker = ImagePicker();
+  final chosenList = <AssetEntity>[];
+  late int itemCount = 0;
 
   void _getCamera() async {
     final XFile? photoFile = await picker.pickImage(source: ImageSource.camera);
@@ -69,18 +71,24 @@ class _GridPhotoState extends State<GridPhoto> {
 
   Widget _photoItem(AssetEntity e) {
     return GestureDetector(
-      onTap: () async {
-        String video = await e.getMediaUrl() as String;
-        File video2 = await e.file as File;
-        print(video);
+      onDoubleTap: () async {
+        File video = await e.file as File;
         Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => FullScreenImage(e, video2),
-          ),
-        );
+            MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
+      },
+      onTap: () async {
+        if (chosenList.contains(e)) {
+          chosenList.remove(e);
+          itemCount--;
+        } else {
+          chosenList.add(e);
+          itemCount++;
+        }
+        print(chosenList);
+        setState(() {});
       },
       child: Stack(
-        children: <Widget>[
+        children: [
           SizedBox(
             width: double.infinity,
             height: double.infinity,
@@ -90,8 +98,7 @@ class _GridPhotoState extends State<GridPhoto> {
               fit: BoxFit.cover,
             ),
           ),
-          e.type == AssetType.video
-              ? const Align(
+          e.type == AssetType.video ? const Align(
                   alignment: Alignment.bottomRight,
                   child: Icon(
                     Icons.videocam,
@@ -100,23 +107,50 @@ class _GridPhotoState extends State<GridPhoto> {
                 )
               : Container(),
           Positioned(
-            right: 10,
-            top: 10,
+            right: 5,
+            top: 5,
             child: GestureDetector(
-              onTap: () {
-                print(e.id);
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.blueAccent,
-                  ),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-              ),
-            ),
+                onTap: () {
+                  print(e.id);
+                  // if (chosenList.contains(e)) {
+                  //   chosenList.remove(e);
+                  //   itemCount--;
+                  // } else {
+                  //   chosenList.add(e);
+                  //   itemCount++;
+                  // }
+                  // print(chosenList);
+                  // setState(() {
+                  // });
+                },
+                child: !chosenList.contains(e)
+                    ? Container(
+                        //padding: const EdgeInsets.all(10.0),
+                        // decoration: BoxDecoration(
+                        //   color: Colors.white,
+                        //   border: Border.all(
+                        //     color: Colors.blueAccent,
+                        //   ),
+                        //   borderRadius: BorderRadius.circular(5.0),
+                        // ),
+                        // child: const Icon(
+                        //   Icons.check_box_outline_blank_outlined,
+                        //   color: Colors.white,
+                        // ),
+                        )
+                    : Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.blueAccent,
+                          child: Text((chosenList.indexOf(e) + 1).toString()),
+                        ))),
           ),
         ],
       ),

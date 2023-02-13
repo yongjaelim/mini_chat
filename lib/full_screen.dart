@@ -54,7 +54,8 @@ class _FullScreenImageState extends State<FullScreenImage> {
               height: double.infinity,
               child: videoPlayer(context)
             ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.e.type == AssetType.video
+        ? FloatingActionButton(
         onPressed: () {
           setState(() {
             if (_videoController.value.isPlaying) {
@@ -67,7 +68,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
         child: Icon(
           _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
         ),
-      ),
+      ) : Container(),
     );
   }
 
