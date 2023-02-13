@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -7,6 +9,7 @@ import 'full_screen.dart';
 
 class GridPhoto extends StatefulWidget {
   List<AssetEntity> images;
+
   GridPhoto({
     required this.images,
     Key? key,
@@ -33,7 +36,7 @@ class _GridPhotoState extends State<GridPhoto> {
       child: RefreshIndicator(
         color: Colors.white,
         backgroundColor: Colors.blue,
-        onRefresh: () async{
+        onRefresh: () async {
           setState(() {
             print('refresh');
           });
@@ -66,10 +69,13 @@ class _GridPhotoState extends State<GridPhoto> {
 
   Widget _photoItem(AssetEntity e) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        String video = await e.getMediaUrl() as String;
+        File video2 = await e.file as File;
+        print(video);
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => FullScreenImage(e),
+            builder: (context) => FullScreenImage(e, video2),
           ),
         );
       },
@@ -86,18 +92,18 @@ class _GridPhotoState extends State<GridPhoto> {
           ),
           e.type == AssetType.video
               ? const Align(
-            alignment: Alignment.bottomRight,
-            child: Icon(
-              Icons.videocam,
-              color: Colors.white,
-            ),
-          )
+                  alignment: Alignment.bottomRight,
+                  child: Icon(
+                    Icons.videocam,
+                    color: Colors.white,
+                  ),
+                )
               : Container(),
           Positioned(
             right: 10,
             top: 10,
             child: GestureDetector(
-              onTap: (){
+              onTap: () {
                 print(e.id);
               },
               child: Container(
@@ -117,4 +123,3 @@ class _GridPhotoState extends State<GridPhoto> {
     );
   }
 }
-
