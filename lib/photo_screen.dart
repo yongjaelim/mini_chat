@@ -38,13 +38,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
     final loadImages =
     await _albums![0].getAssetListPaged(page: _page, size: _sizePerPage);
-    if(_page==0){
+    if(_page==0) {
       var addCamera = const AssetEntity(id: 'camera', typeInt: 0, width: 0, height: 0);
       loadImages.insert(0, addCamera);
     }
 
+    _images.addAll(loadImages);
+
     setState(() {
-      _images.addAll(loadImages);
       _page++;
     });
   }

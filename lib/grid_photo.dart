@@ -22,7 +22,6 @@ class GridPhoto extends StatefulWidget {
 class _GridPhotoState extends State<GridPhoto> {
   final picker = ImagePicker();
   final chosenList = <AssetEntity>[];
-  late int itemCount = 0;
 
   void _getCamera() async {
     final XFile? photoFile = await picker.pickImage(source: ImageSource.camera);
@@ -73,16 +72,21 @@ class _GridPhotoState extends State<GridPhoto> {
     return GestureDetector(
       onDoubleTap: () async {
         File video = await e.file as File;
+        if(!mounted) return;
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
+      },
+      onLongPress: () async {
+        File video = await e.file as File;
+        if(!mounted) return;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
       },
       onTap: () async {
         if (chosenList.contains(e)) {
           chosenList.remove(e);
-          itemCount--;
         } else {
           chosenList.add(e);
-          itemCount++;
         }
         print(chosenList);
         setState(() {});
@@ -109,48 +113,34 @@ class _GridPhotoState extends State<GridPhoto> {
           Positioned(
             right: 5,
             top: 5,
-            child: GestureDetector(
-                onTap: () {
-                  print(e.id);
-                  // if (chosenList.contains(e)) {
-                  //   chosenList.remove(e);
-                  //   itemCount--;
-                  // } else {
-                  //   chosenList.add(e);
-                  //   itemCount++;
-                  // }
-                  // print(chosenList);
-                  // setState(() {
-                  // });
-                },
-                child: !chosenList.contains(e)
-                    ? Container(
-                        //padding: const EdgeInsets.all(10.0),
-                        // decoration: BoxDecoration(
-                        //   color: Colors.white,
-                        //   border: Border.all(
-                        //     color: Colors.blueAccent,
-                        //   ),
-                        //   borderRadius: BorderRadius.circular(5.0),
-                        // ),
-                        // child: const Icon(
-                        //   Icons.check_box_outline_blank_outlined,
-                        //   color: Colors.white,
-                        // ),
-                        )
-                    : Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.blueAccent,
-                          child: Text((chosenList.indexOf(e) + 1).toString()),
-                        ))),
+            child: !chosenList.contains(e)
+                ? Container(
+                    //padding: const EdgeInsets.all(10.0),
+                    // decoration: BoxDecoration(
+                    //   color: Colors.white,
+                    //   border: Border.all(
+                    //     color: Colors.blueAccent,
+                    //   ),
+                    //   borderRadius: BorderRadius.circular(5.0),
+                    // ),
+                    // child: const Icon(
+                    //   Icons.check_box_outline_blank_outlined,
+                    //   color: Colors.white,
+                    // ),
+                    )
+                : Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.blueAccent,
+                      child: Text((chosenList.indexOf(e) + 1).toString()),
+                    )),
           ),
         ],
       ),

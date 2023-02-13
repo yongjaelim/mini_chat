@@ -1,7 +1,9 @@
 import 'package:mini_chat/dir_path.dart';
 import 'package:mini_chat/photo_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:mini_chat/view_models/image_view_model.dart';
+import 'package:mini_chat/views/image_view.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +19,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Home(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ImageViewModel(),
+        ),
+      ],
+      child: const MaterialApp(
+        home: Home(),
+      ),
     );
   }
 }
@@ -31,7 +40,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +47,10 @@ class _HomeState extends State<Home> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(onPressed: onPhotoClick, icon: const Icon(Icons.collections),),
+            IconButton(
+              onPressed: onPhotoClick,
+              icon: const Icon(Icons.collections),
+            ),
           ],
         ),
       ),
@@ -48,6 +59,8 @@ class _HomeState extends State<Home> {
 
   void onPhotoClick() {
     Navigator.push(
-      context, MaterialPageRoute(builder: (context) => const PhotoScreen()),);
+      context,
+      MaterialPageRoute(builder: (context) => const ImageView()),
+    );
   }
 }
