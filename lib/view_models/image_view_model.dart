@@ -35,14 +35,16 @@ class ImageViewModel with ChangeNotifier {
     final loadImages =
     await _albums![0].getAssetListPaged(page: _page, size: _sizePerPage);
 
-    if(_page==0) {
+    if(_page == 0) {
       var addCamera = const AssetEntity(id: 'camera', typeInt: 0, width: 0, height: 0);
       loadImages.insert(0, addCamera);
     }
 
     _images.addAll(loadImages);
+    print(_page);
     _page++;
     notifyListeners();
+
   }
 
   Future<void> checkPermission() async {
@@ -53,4 +55,9 @@ class ImageViewModel with ChangeNotifier {
       await PhotoManager.openSetting();
     }
   }
+
+  // Future<void> refresh() async {
+  //   await getPhotos();
+  //   notifyListeners();
+  // }
 }

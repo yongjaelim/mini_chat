@@ -41,6 +41,7 @@ class _GridPhotoState extends State<GridPhoto> {
           setState(() {
             print('refresh');
           });
+          print(widget.images.length);
         },
         child: GridView.count(
           crossAxisCount: 3,

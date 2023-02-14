@@ -1,16 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mini_chat/view_models/image_view_model.dart';
 import 'package:photo_manager/photo_manager.dart';
-
 import '../full_screen.dart';
 
 class GridPhotoView extends StatelessWidget {
-  GridPhotoView(this.images, this._imageViewModel, {Key? key}) : super(key: key);
-  List<AssetEntity> images;
+  GridPhotoView(this._imageViewModel, {Key? key}) : super(key: key);
   final ImageViewModel _imageViewModel;
   final picker = ImagePicker();
 
@@ -22,13 +19,15 @@ class GridPhotoView extends StatelessWidget {
         color: Colors.white,
         backgroundColor: Colors.blue,
         onRefresh: () async {
-          return null;
+          print('refresh');
+          //print(_imageViewModel.images.length);
+          //_imageViewModel.getPhotos();
         },
         child: GridView.count(
           crossAxisCount: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          children: images.map((e) {
+          children: _imageViewModel.images.map((e) {
             if (e.id == 'camera') {
               return _cameraButton();
             } else {
@@ -40,7 +39,7 @@ class GridPhotoView extends StatelessWidget {
     );
   }
 
-  void _getCamera() async {
+  Future<void> _getCamera() async {
     final XFile? photoFile = await picker.pickImage(source: ImageSource.camera);
     if (photoFile != null) {
       GallerySaver.saveImage(photoFile.path);
@@ -49,7 +48,9 @@ class GridPhotoView extends StatelessWidget {
 
   IconButton _cameraButton() {
     return IconButton(
-      onPressed: _getCamera,
+      onPressed: () {
+        _getCamera();
+      },
       icon: const Icon(
         Icons.camera_alt_outlined,
         color: Colors.black,
@@ -59,23 +60,22 @@ class GridPhotoView extends StatelessWidget {
 
   Widget _photoItem(AssetEntity e, BuildContext context) {
     return GestureDetector(
-      onDoubleTap: () async {
-        File video = await e.file as File;
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
-      },
-      onLongPress: () async {
-        File video = await e.file as File;
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
-      },
+      // onDoubleTap: () async {
+      //   File video = await e.file as File;
+      //   Navigator.of(context).push(
+      //       MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
+      // },
+      // onLongPress: () async {
+      //   File video = await e.file as File;
+      //   Navigator.of(context).push(
+      //       MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
+      // },
       onTap: () async {
         if (_imageViewModel.chosenList.contains(e)) {
           _imageViewModel.deletePhotoFromChosenList(e);
         } else {
           _imageViewModel.addPhotoToChosenList(e);
         }
-        print('mvvm');
         print(_imageViewModel.chosenList);
       },
       child: Stack(
@@ -100,8 +100,9 @@ class GridPhotoView extends StatelessWidget {
           Positioned(
             right: 5,
             top: 5,
-            child: !_imageViewModel.chosenList.contains(e) ? Container() :
-            Container(
+            child: !_imageViewModel.chosenList.contains(e)
+                ? Container()
+                : Container(
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
