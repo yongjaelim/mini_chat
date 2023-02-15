@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:video_player/video_player.dart';
 import '../models/image_model.dart';
 
 class ImageViewModel with ChangeNotifier {
   late ImageModel _imageModel;
+  late VideoPlayerController videoController;
   List<AssetPathEntity>? _albums;
-  int _page = 0;
+
   final int _sizePerPage = 20;
-  final List<AssetEntity> _images = <AssetEntity>[];
+  final Set<AssetEntity> _images = {};
   final List<AssetEntity> _chosenList = <AssetEntity>[];
 
   ImageViewModel() {
     _imageModel = ImageModel();
+    checkPermission();
+    getPhotos();
   }
 
   List<AssetPathEntity>? get albums => _albums;
-  List<AssetEntity> get images => _images;
+
+  Set<AssetEntity> get images => _images;
+
   List<AssetEntity> get chosenList => _chosenList;
 
   void addPhotoToChosenList(AssetEntity photo) {
@@ -29,22 +35,25 @@ class ImageViewModel with ChangeNotifier {
   }
 
   Future<void> getPhotos() async {
-
     _albums = await _imageModel.getAlbums();
 
     final loadImages =
-    await _albums![0].getAssetListPaged(page: _page, size: _sizePerPage);
+            // await _albums![0].getAssetListRange(start: _imageModel.pageStart, end: _imageModel.pageEnd);
+        await _albums![0]
+            .getAssetListPaged(page: _imageModel.page, size: _sizePerPage);
 
-    if(_page == 0) {
-      var addCamera = const AssetEntity(id: 'camera', typeInt: 0, width: 0, height: 0);
+    if (_imageModel.page == 0) {
+      var addCamera =
+          const AssetEntity(id: 'camera', typeInt: 0, width: 0, height: 0);
       loadImages.insert(0, addCamera);
     }
 
     _images.addAll(loadImages);
-    print(_page);
-    _page++;
+    _imageModel.updatePage();
+    //print(_page);
     notifyListeners();
-
+    //print(images.length);
+    //print('here');
   }
 
   Future<void> checkPermission() async {
@@ -56,8 +65,8 @@ class ImageViewModel with ChangeNotifier {
     }
   }
 
-  // Future<void> refresh() async {
-  //   await getPhotos();
-  //   notifyListeners();
-  // }
+// Future<void> refresh() async {
+//   await getPhotos();
+//   notifyListeners();
+// }
 }

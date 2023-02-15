@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mini_chat/view_models/image_view_model.dart';
+import 'package:mini_chat/views/full_screen_view.dart';
 import 'package:photo_manager/photo_manager.dart';
 import '../full_screen.dart';
 
@@ -21,7 +22,7 @@ class GridPhotoView extends StatelessWidget {
         onRefresh: () async {
           print('refresh');
           //print(_imageViewModel.images.length);
-          //_imageViewModel.getPhotos();
+          _imageViewModel.getPhotos();
         },
         child: GridView.count(
           crossAxisCount: 3,
@@ -60,16 +61,16 @@ class GridPhotoView extends StatelessWidget {
 
   Widget _photoItem(AssetEntity e, BuildContext context) {
     return GestureDetector(
-      // onDoubleTap: () async {
-      //   File video = await e.file as File;
-      //   Navigator.of(context).push(
-      //       MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
-      // },
-      // onLongPress: () async {
-      //   File video = await e.file as File;
-      //   Navigator.of(context).push(
-      //       MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
-      // },
+      onDoubleTap: () async {
+        File video = await e.file as File;
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FullScreenView(e, video)));
+      },
+      onLongPress: () async {
+        File video = await e.file as File;
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
+      },
       onTap: () async {
         if (_imageViewModel.chosenList.contains(e)) {
           _imageViewModel.deletePhotoFromChosenList(e);

@@ -17,6 +17,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  int start = 0;
+  int end = 19;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

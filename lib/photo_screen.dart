@@ -42,10 +42,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
       var addCamera = const AssetEntity(id: 'camera', typeInt: 0, width: 0, height: 0);
       loadImages.insert(0, addCamera);
     }
-
-    _images.addAll(loadImages);
+    print(loadImages);
 
     setState(() {
+      _images.addAll(loadImages);
+
       _page++;
     });
   }

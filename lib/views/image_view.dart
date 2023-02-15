@@ -11,13 +11,19 @@ class ImageView extends StatelessWidget {
     int _count = 0;
     return Consumer<ImageViewModel>(
       builder: (context, imageViewModel, child) {
-        imageViewModel.checkPermission();
+        // if (_count == 0) {
+        //   imageViewModel.checkPermission();
+        //   _count++;
+        // }
+        //imageViewModel.checkPermission();
+        print('herehehkharkashfajsd;fljas');
         return Scaffold(
           appBar: AppBar(
             title: const Text('recent'),
           ),
           body: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scroll) {
+              print('ahahahahahahahahahahah');
               scrollNotification(scroll, imageViewModel);
               print('here $_count');
               _count++;
