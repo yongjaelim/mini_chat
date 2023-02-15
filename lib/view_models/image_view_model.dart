@@ -29,6 +29,16 @@ class ImageViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void playVideo() {
+    videoController.play();
+    notifyListeners();
+  }
+
+  void pauseVideo() {
+    videoController.pause();
+    notifyListeners();
+  }
+
   void deletePhotoFromChosenList(AssetEntity photo) {
     _chosenList.remove(photo);
     notifyListeners();

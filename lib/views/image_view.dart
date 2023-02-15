@@ -45,6 +45,5 @@ class ImageView extends StatelessWidget {
       print('notif');
       imageViewModel.getPhotos();
     }
-    print('here???');
   }
 }
