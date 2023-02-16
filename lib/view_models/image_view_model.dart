@@ -7,6 +7,7 @@ class ImageViewModel with ChangeNotifier {
   late ImageModel _imageModel;
   late VideoPlayerController videoController;
   List<AssetPathEntity>? _albums;
+  int _page = 0;
 
   final int _sizePerPage = 20;
   final Set<AssetEntity> _images = {};
@@ -23,6 +24,12 @@ class ImageViewModel with ChangeNotifier {
 
   List<AssetEntity> get chosenList => _chosenList;
 
+  int get page => _page;
+
+  void updatePage() {
+    _page++;
+  }
+
   void addPhotoToChosenList(AssetEntity photo) {
     _chosenList.add(photo);
     notifyListeners();
@@ -38,16 +45,16 @@ class ImageViewModel with ChangeNotifier {
 
     final loadImages =
         await _albums![0]
-            .getAssetListPaged(page: _imageModel.page, size: _sizePerPage);
+            .getAssetListPaged(page: _page, size: _sizePerPage);
 
-    if (_imageModel.page == 0) {
+    if (_page == 0) {
       var addCamera =
           const AssetEntity(id: 'camera', typeInt: 0, width: 0, height: 0);
       loadImages.insert(0, addCamera);
     }
 
     _images.addAll(loadImages);
-    _imageModel.updatePage();
+    updatePage();
     notifyListeners();
   }
 
