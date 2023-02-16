@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
   void onPhotoClick() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const PhotoScreen()),
+      MaterialPageRoute(builder: (context) => const ImageView()),
     );
   }
 }

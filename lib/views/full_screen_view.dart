@@ -81,27 +81,27 @@ class FullScreenView extends StatelessWidget {
                 aspectRatio: imageViewModel.videoController.value.aspectRatio,
                 child: VideoPlayer(imageViewModel.videoController),
               ),
-              Visibility(
-                visible: imageViewModel.onTouch,
-                child: Container(
-                  color: Colors.grey.withOpacity(0.5),
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(side: BorderSide(color: Colors.white))
-                    ),
-                    child: Icon(imageViewModel.videoController.value.isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white,),
-                    onPressed: () {
-                      timer = Timer.periodic(const Duration(milliseconds: 1000), (_) {
-                        imageViewModel.setOnTouch();
-                      });
-                      timer.cancel();
-                      // pause while video is playing, play while video is pausing
-                      imageViewModel.videoController.value.isPlaying ? imageViewModel.pauseVideo() : imageViewModel.playVideo();
-                    },
-                  ),
-                ),
-              )
+              // Visibility(
+              //   visible: imageViewModel.onTouch,
+              //   child: Container(
+              //     color: Colors.grey.withOpacity(0.5),
+              //     alignment: Alignment.center,
+              //     child: ElevatedButton(
+              //       style: ElevatedButton.styleFrom(
+              //         shape: const CircleBorder(side: BorderSide(color: Colors.white))
+              //       ),
+              //       child: Icon(imageViewModel.videoController.value.isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white,),
+              //       onPressed: () {
+              //         timer = Timer.periodic(const Duration(milliseconds: 1000), (_) {
+              //           imageViewModel.setOnTouch();
+              //         });
+              //         timer.cancel();
+              //         // pause while video is playing, play while video is pausing
+              //         imageViewModel.videoController.value.isPlaying ? imageViewModel.pauseVideo() : imageViewModel.playVideo();
+              //       },
+              //     ),
+              //   ),
+              // )
             ]
           );
         } else {

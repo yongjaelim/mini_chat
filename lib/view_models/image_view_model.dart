@@ -7,7 +7,6 @@ class ImageViewModel with ChangeNotifier {
   late ImageModel _imageModel;
   late VideoPlayerController videoController;
   List<AssetPathEntity>? _albums;
-  bool _onTouch = true;
 
   final int _sizePerPage = 20;
   final Set<AssetEntity> _images = {};
@@ -16,19 +15,13 @@ class ImageViewModel with ChangeNotifier {
   ImageViewModel() {
     _imageModel = ImageModel();
     checkPermission();
-    getPhotos();
   }
 
-  bool get onTouch => _onTouch;
   List<AssetPathEntity>? get albums => _albums;
 
   Set<AssetEntity> get images => _images;
 
   List<AssetEntity> get chosenList => _chosenList;
-
-  void setOnTouch() {
-    _onTouch = false;
-  }
 
   void addPhotoToChosenList(AssetEntity photo) {
     _chosenList.add(photo);
@@ -54,6 +47,7 @@ class ImageViewModel with ChangeNotifier {
     _albums = await _imageModel.getAlbums();
 
     final loadImages =
+            // await _albums![0].getAssetListRange(start: _imageModel.pageStart, end: _imageModel.pageEnd);
         await _albums![0]
             .getAssetListPaged(page: _imageModel.page, size: _sizePerPage);
 
