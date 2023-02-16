@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mini_chat/view_models/image_view_model.dart';
@@ -38,26 +39,26 @@ class FullScreenView extends StatelessWidget {
                   height: double.infinity,
                   child: videoPlayer(
                     context,
-                    imageViewModel.videoController,
+                    imageViewModel,
                     initializeVideoPlayerFuture,
                   ),
                 ),
-          floatingActionButton: e.type == AssetType.video
-              ? FloatingActionButton(
-                  onPressed: () {
-                    if (imageViewModel.videoController.value.isPlaying) {
-                      imageViewModel.videoController.pause();
-                    } else {
-                      imageViewModel.videoController.play();
-                    }
-                  },
-                  child: Icon(
-                    imageViewModel.videoController.value.isPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                  ),
-                )
-              : Container(),
+          // floatingActionButton: e.type == AssetType.video
+          //     ? FloatingActionButton(
+          //         onPressed: () {
+          //           if (imageViewModel.videoController.value.isPlaying) {
+          //             imageViewModel.videoController.pause();
+          //           } else {
+          //             imageViewModel.videoController.play();
+          //           }
+          //         },
+          //         child: Icon(
+          //           imageViewModel.videoController.value.isPlaying
+          //               ? Icons.pause
+          //               : Icons.play_arrow,
+          //         ),
+          //       )
+          //     : Container(),
         );
       },
     );
@@ -65,15 +66,43 @@ class FullScreenView extends StatelessWidget {
 
   Widget videoPlayer(
       BuildContext context,
-      VideoPlayerController videoPlayerController,
+      ImageViewModel imageViewModel,
       Future<void> initializeVideoPlayerFuture) {
+
+     Timer timer;
+
     return FutureBuilder(
       future: initializeVideoPlayerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return AspectRatio(
-            aspectRatio: videoPlayerController.value.aspectRatio,
-            child: VideoPlayer(videoPlayerController),
+          return Stack(
+            children: [
+              AspectRatio(
+                aspectRatio: imageViewModel.videoController.value.aspectRatio,
+                child: VideoPlayer(imageViewModel.videoController),
+              ),
+              Visibility(
+                visible: imageViewModel.onTouch,
+                child: Container(
+                  color: Colors.grey.withOpacity(0.5),
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(side: BorderSide(color: Colors.white))
+                    ),
+                    child: Icon(imageViewModel.videoController.value.isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white,),
+                    onPressed: () {
+                      timer = Timer.periodic(const Duration(milliseconds: 1000), (_) {
+                        imageViewModel.setOnTouch();
+                      });
+                      timer.cancel();
+                      // pause while video is playing, play while video is pausing
+                      imageViewModel.videoController.value.isPlaying ? imageViewModel.pauseVideo() : imageViewModel.playVideo();
+                    },
+                  ),
+                ),
+              )
+            ]
           );
         } else {
           return const Center(child: CircularProgressIndicator());

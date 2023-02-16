@@ -16,11 +16,11 @@ class FullScreenImage extends StatefulWidget {
 class _FullScreenImageState extends State<FullScreenImage> {
   late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;
+  bool startedPlaying = false;
 
   @override
   void initState() {
-    _videoController = VideoPlayerController.file(
-        widget.video);
+    _videoController = VideoPlayerController.file(widget.video);
     _initializeVideoPlayerFuture = _videoController.initialize();
 
     super.initState();
@@ -32,7 +32,6 @@ class _FullScreenImageState extends State<FullScreenImage> {
 
     super.dispose();
   }
-
 
   // @override
   @override
@@ -52,34 +51,76 @@ class _FullScreenImageState extends State<FullScreenImage> {
           : SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: videoPlayer(context)
-            ),
+              child: videoPlayer(context)),
       floatingActionButton: widget.e.type == AssetType.video
-        ? FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            if (_videoController.value.isPlaying) {
-              _videoController.pause();
-            } else {
-              _videoController.play();
-            }
-          });
-        },
-        child: Icon(
-          _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-      ) : Container(),
+          ? FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  if (_videoController.value.isPlaying) {
+                    _videoController.pause();
+                  } else {
+                    _videoController.play();
+                  }
+                });
+              },
+              child: Icon(
+                _videoController.value.isPlaying
+                    ? Icons.pause
+                    : Icons.play_arrow,
+              ),
+            )
+          : Container(),
     );
   }
 
   Widget videoPlayer(BuildContext context) {
     return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
+      future: started(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return AspectRatio(
-            aspectRatio: _videoController.value.aspectRatio,
-            child: VideoPlayer(_videoController),
+          return Expanded(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: AspectRatio(
+                    aspectRatio: _videoController.value.aspectRatio,
+                    child: VideoPlayer(_videoController),
+                  ),
+                ),
+                Row(  
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: _videoController,
+                      builder: (context, VideoPlayerValue value, child) {
+                        return Text(
+                          _videoDuration(value.position),
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: SizedBox(
+                        height: 20,
+                        child: VideoProgressIndicator(
+                          _videoController,
+                          allowScrubbing: true,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 12),
+                        ),
+                      ),
+                    ),
+                    Text(_videoDuration(_videoController.value.duration),
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),),
+                  ],
+                ),
+              ],
+            ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -87,4 +128,28 @@ class _FullScreenImageState extends State<FullScreenImage> {
       },
     );
   }
+
+  Future<bool> started() async {
+    await _videoController.initialize();
+    await _videoController.play();
+    startedPlaying = true;
+    return true;
+  }
+
+  String _videoDuration(Duration duration) {
+    print(_videoController.value.duration);
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return [
+      if (duration.inHours > 0) {
+        hours,
+        minutes,
+        seconds,
+      }
+    ].join(':');
+  }
+
 }

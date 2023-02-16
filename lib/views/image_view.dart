@@ -8,25 +8,15 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int _count = 0;
     return Consumer<ImageViewModel>(
       builder: (context, imageViewModel, child) {
-        // if (_count == 0) {
-        //   imageViewModel.checkPermission();
-        //   _count++;
-        // }
-        //imageViewModel.checkPermission();
-        print('herehehkharkashfajsd;fljas');
         return Scaffold(
           appBar: AppBar(
             title: const Text('recent'),
           ),
           body: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scroll) {
-              print('ahahahahahahahahahahah');
               scrollNotification(scroll, imageViewModel);
-              print('here $_count');
-              _count++;
               return false;
             },
             child: SafeArea(
@@ -42,7 +32,6 @@ class ImageView extends StatelessWidget {
 
   void scrollNotification(ScrollNotification scroll, ImageViewModel imageViewModel){
     if (scroll.metrics.maxScrollExtent * 0.7 < scroll.metrics.pixels){
-      print('notif');
       imageViewModel.getPhotos();
     }
   }
