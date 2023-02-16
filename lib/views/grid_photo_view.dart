@@ -16,26 +16,17 @@ class GridPhotoView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: RefreshIndicator(
-        color: Colors.white,
-        backgroundColor: Colors.blue,
-        onRefresh: () async {
-          print('refresh');
-          //print(_imageViewModel.images.length);
-          _imageViewModel.getPhotos();
-        },
-        child: GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: _imageViewModel.images.map((e) {
-            if (e.id == 'camera') {
-              return _cameraButton();
-            } else {
-              return _photoItem(e, context);
-            }
-          }).toList(),
-        ),
+      child: GridView.count(
+        crossAxisCount: 3,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        children: _imageViewModel.images.map((e) {
+          if (e.id == 'camera') {
+            return _cameraButton();
+          } else {
+            return _photoItem(e, context);
+          }
+        }).toList(),
       ),
     );
   }

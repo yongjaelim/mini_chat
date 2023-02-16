@@ -60,10 +60,7 @@ class ImageViewModel with ChangeNotifier {
 
     _images.addAll(loadImages);
     _imageModel.updatePage();
-    //print(_page);
     notifyListeners();
-    //print(images.length);
-    //print('here');
   }
 
   Future<void> checkPermission() async {
@@ -74,9 +71,4 @@ class ImageViewModel with ChangeNotifier {
       await PhotoManager.openSetting();
     }
   }
-
-// Future<void> refresh() async {
-//   await getPhotos();
-//   notifyListeners();
-// }
 }

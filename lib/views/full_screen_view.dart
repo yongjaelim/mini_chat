@@ -18,40 +18,45 @@ class FullScreenView extends StatelessWidget {
     return Consumer<ImageViewModel>(
       builder: (context, imageViewModel, child) {
         imageViewModel.videoController = VideoPlayerController.file(video);
-        initializeVideoPlayerFuture = imageViewModel.videoController.initialize();
+        initializeVideoPlayerFuture =
+            imageViewModel.videoController.initialize();
         print('mvvm full screen');
         return Scaffold(
           appBar: AppBar(),
           body: e.type == AssetType.image
               ? SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: AssetEntityImage(
-              e,
-              isOriginal: true,
-              fit: BoxFit.contain,
-            ),
-          )
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: AssetEntityImage(
+                    e,
+                    isOriginal: true,
+                    fit: BoxFit.contain,
+                  ),
+                )
               : SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: videoPlayer(
-                  context, imageViewModel.videoController, initializeVideoPlayerFuture)),
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: videoPlayer(
+                    context,
+                    imageViewModel.videoController,
+                    initializeVideoPlayerFuture,
+                  ),
+                ),
           floatingActionButton: e.type == AssetType.video
               ? FloatingActionButton(
-            onPressed: () {
-              if (imageViewModel.videoController.value.isPlaying) {
-                imageViewModel.videoController.pause();
-              } else {
-                imageViewModel.videoController.play();
-              }
-            },
-            child: Icon(
-              imageViewModel.videoController.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow,
-            ),
-          )
+                  onPressed: () {
+                    if (imageViewModel.videoController.value.isPlaying) {
+                      imageViewModel.videoController.pause();
+                    } else {
+                      imageViewModel.videoController.play();
+                    }
+                  },
+                  child: Icon(
+                    imageViewModel.videoController.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
+                )
               : Container(),
         );
       },
