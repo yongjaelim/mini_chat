@@ -47,7 +47,6 @@ class ImageViewModel with ChangeNotifier {
     _albums = await _imageModel.getAlbums();
 
     final loadImages =
-            // await _albums![0].getAssetListRange(start: _imageModel.pageStart, end: _imageModel.pageEnd);
         await _albums![0]
             .getAssetListPaged(page: _imageModel.page, size: _sizePerPage);
 
