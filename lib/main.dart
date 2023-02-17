@@ -1,8 +1,6 @@
 import 'package:mini_chat/dir_path.dart';
 import 'package:mini_chat/photo_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:mini_chat/view_models/full_screen_image_view_model.dart';
-import 'package:mini_chat/view_models/full_screen_video_view_model.dart';
 import 'package:mini_chat/view_models/image_view_model.dart';
 import 'package:mini_chat/views/image_view.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   int start = 0;
   int end = 19;
 
@@ -28,12 +27,6 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (_) => ImageViewModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => FullScreenVideoViewModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => FullScreenImageViewModel(),
         ),
       ],
       child: const MaterialApp(

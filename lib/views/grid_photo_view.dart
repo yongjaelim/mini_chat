@@ -2,20 +2,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mini_chat/view_models/full_screen_image_view_model.dart';
-import 'package:mini_chat/view_models/full_screen_video_view_model.dart';
 import 'package:mini_chat/view_models/image_view_model.dart';
-import 'package:mini_chat/views/full_screen_video_view.dart';
+import 'package:mini_chat/views/full_screen_view.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
-import 'full_screen_image_view.dart';
+import '../full_screen.dart';
 
 class GridPhotoView extends StatelessWidget {
   GridPhotoView(this._imageViewModel, {Key? key}) : super(key: key);
   final ImageViewModel _imageViewModel;
   final picker = ImagePicker();
-  late FullScreenVideoViewModel _fullScreenVideoViewModel;
-  late FullScreenImageViewModel _fullScreenImageViewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -56,37 +51,16 @@ class GridPhotoView extends StatelessWidget {
   }
 
   Widget _photoItem(AssetEntity e, BuildContext context) {
-
     return GestureDetector(
-      onDoubleTap: () {
-        if (e.type == AssetType.video) {
-          _fullScreenVideoViewModel = Provider.of<FullScreenVideoViewModel>(context, listen: false);
-          _fullScreenVideoViewModel.setAssetEntity(e);
-          _fullScreenVideoViewModel.setFile(e);
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return FullScreenVideoView();
-              }));
-        } else {
-          _fullScreenImageViewModel = Provider.of<FullScreenImageViewModel>(context, listen: false);
-          _fullScreenImageViewModel.setAssetEntity(e);
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => FullScreenImageView()));
-        }
+      onDoubleTap: () async {
+        File video = await e.file as File;
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FullScreenView(e, video)));
       },
-      onLongPress: () {
-        if (e.type == AssetType.video) {
-          _fullScreenVideoViewModel = Provider.of<FullScreenVideoViewModel>(context, listen: false);
-          _fullScreenVideoViewModel.setAssetEntity(e);
-          _fullScreenVideoViewModel.setFile(e);
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => FullScreenVideoView()));
-        } else {
-          _fullScreenImageViewModel = Provider.of<FullScreenImageViewModel>(context, listen: false);
-          _fullScreenImageViewModel.setAssetEntity(e);
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => FullScreenImageView()));
-        }
+      onLongPress: () async {
+        File video = await e.file as File;
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FullScreenImage(e, video)));
       },
       onTap: () async {
         if (_imageViewModel.chosenList.contains(e)) {
@@ -101,20 +75,7 @@ class GridPhotoView extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: double.infinity,
-            child: e.type == AssetType.video ? GestureDetector(
-              onTap: () {
-                _fullScreenVideoViewModel = Provider.of<FullScreenVideoViewModel>(context, listen: false);
-                _fullScreenVideoViewModel.setAssetEntity(e);
-                _fullScreenVideoViewModel.setFile(e);
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => FullScreenVideoView()));
-              },
-              child: AssetEntityImage(
-                e,
-                isOriginal: false,
-                fit: BoxFit.cover,
-              ),
-            ) : AssetEntityImage(
+            child: AssetEntityImage(
               e,
               isOriginal: false,
               fit: BoxFit.cover,

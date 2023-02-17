@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 import '../models/image_model.dart';
-import '../repositories/media_repository.dart';
 
 class ImageViewModel with ChangeNotifier {
-  late MediaRepository _mediaRepository;
+  late ImageModel _imageModel;
+  late VideoPlayerController videoController;
   List<AssetPathEntity>? _albums;
   int _page = 0;
 
@@ -14,13 +14,16 @@ class ImageViewModel with ChangeNotifier {
   final List<AssetEntity> _chosenList = <AssetEntity>[];
 
   ImageViewModel() {
-    _mediaRepository = MediaRepository();
+    _imageModel = ImageModel();
     checkPermission();
   }
 
   List<AssetPathEntity>? get albums => _albums;
+
   Set<AssetEntity> get images => _images;
+
   List<AssetEntity> get chosenList => _chosenList;
+
   int get page => _page;
 
   void updatePage() {
@@ -38,7 +41,7 @@ class ImageViewModel with ChangeNotifier {
   }
 
   Future<void> getPhotos() async {
-    _albums = await _mediaRepository.getAlbums();
+    _albums = await _imageModel.getAlbums();
 
     final loadImages =
         await _albums![0]
@@ -62,5 +65,15 @@ class ImageViewModel with ChangeNotifier {
     } else {
       await PhotoManager.openSetting();
     }
+  }
+
+  void playVideo() {
+    videoController.play();
+    notifyListeners();
+  }
+
+  void pauseVideo() {
+    videoController.pause();
+    notifyListeners();
   }
 }
