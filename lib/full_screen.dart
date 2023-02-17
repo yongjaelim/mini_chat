@@ -75,7 +75,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
 
   Widget videoPlayer(BuildContext context) {
     return FutureBuilder(
-      future: started(),
+      future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Expanded(
