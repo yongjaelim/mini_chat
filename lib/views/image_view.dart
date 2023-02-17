@@ -30,7 +30,7 @@ class ImageView extends StatelessWidget {
     );
   }
 
-  void scrollNotification(ScrollNotification scroll, ImageViewModel imageViewModel){
+  void scrollNotification(ScrollNotification scroll, ImageViewModel imageViewModel) {
     if (scroll.metrics.maxScrollExtent * 0.7 < scroll.metrics.pixels){
       imageViewModel.getPhotos();
     }
